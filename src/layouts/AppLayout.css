@@ -1,0 +1,28 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  background: var(--color-background);
+}
+
+.app-layout__main {
+  flex: 1;
+}
+
+.app-layout__footer {
+  display: flex;
+  justify-content: space-between;
+  width: min(100%, var(--content-width-xl));
+  margin: 0 auto;
+  padding: var(--space-5) var(--content-gutter);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+@media (max-width: 30rem) {
+  .app-layout__footer {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+}
