@@ -1,7 +1,15 @@
+import { useEffect } from 'react';
 import { FileImage, RefreshCw, Trash2 } from 'lucide-react';
 import './ImagePreview.css';
 
 function ImagePreview({ compressedImage, image, onChooseAnother, onRemove }) {
+  useEffect(() => {
+    if (image?.type === 'image/png') {
+      console.debug('PNG preview started:', { hasCompressedImage: Boolean(compressedImage) });
+      if (compressedImage) console.debug('PNG preview completed:', { url: compressedImage.url });
+    }
+  }, [compressedImage, image]);
+
   return (
     <div className="image-preview">
       <div className="image-preview__comparison">

@@ -34,6 +34,7 @@ export const dimensionPresets = [
   dimensionPreset('social-linkedin-post', 'social-media', 'LinkedIn Post', 'Landscape canvas for LinkedIn feed posts.', 1200, 627, ['linkedin', 'social', 'post', 'landscape']),
   dimensionPreset('social-linkedin-cover', 'social-media', 'LinkedIn Cover', 'Wide canvas for a LinkedIn profile cover.', 1584, 396, ['linkedin', 'cover', 'wide']),
   dimensionPreset('social-pinterest-pin', 'social-media', 'Pinterest Pin', 'Tall canvas for Pinterest pins.', 1000, 1500, ['pinterest', 'pin', 'vertical']),
+  dimensionPreset('social-twitter-card', 'social-media', 'Twitter Card', 'Landscape canvas for Twitter/X link previews.', 1200, 628, ['twitter', 'x', 'social', 'card', 'landscape']),
 
   dimensionPreset('website-hero', 'website-seo', 'Website Hero', 'Wide hero canvas for landing pages and website headers.', 1920, 800, ['website', 'hero', 'header', 'wide']),
   dimensionPreset('website-blog-featured', 'website-seo', 'Blog Featured', 'Landscape canvas for blog featured images and link previews.', 1200, 630, ['blog', 'featured', 'seo', 'landscape']),

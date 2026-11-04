@@ -13,11 +13,12 @@ function formatFileSize(bytes) {
 
 function getReduction(originalSize, compressedSize) {
   if (!originalSize || !compressedSize) return '—';
+  if (compressedSize === originalSize) return 'Original retained — no size reduction';
   const reduction = ((originalSize - compressedSize) / originalSize) * 100;
   return reduction >= 0 ? `${reduction.toFixed(1)}% smaller` : `${Math.abs(reduction).toFixed(1)}% larger`;
 }
 
-const ImageUploader = forwardRef(function ImageUploader(_, ref) {
+const ImageUploader = forwardRef(function ImageUploader({ onApplyPreset, onPresetDeleted, selectedPresetId }, ref) {
   const inputRef = useRef(null);
   const [quality, setQuality] = useState(80);
   const [resize, setResize] = useState(null);
@@ -31,6 +32,7 @@ const ImageUploader = forwardRef(function ImageUploader(_, ref) {
         height: resize.mode === 'original' ? Math.round(resize.width * image.height / image.width) : resize.height,
         originalHeight: image.height,
         originalWidth: image.width,
+        outputType: resize.sourceUrl === '' ? image.type : resize.outputType,
         sourceUrl: image.url,
       };
     }
@@ -105,6 +107,7 @@ const ImageUploader = forwardRef(function ImageUploader(_, ref) {
   };
 
   const hasCompressionResult = Boolean(compressedImage && !isProcessing);
+  const isPngOutput = activeResize.outputType === 'image/png';
   const statusText = isProcessing ? 'Compressing…' : hasCompressionResult ? 'Compression ready' : 'Waiting for image';
   const error = uploadError || processingError;
 
@@ -182,6 +185,7 @@ const ImageUploader = forwardRef(function ImageUploader(_, ref) {
         <ResizeControls
           dimensions={activeResize}
           formatNotice={formatNotice}
+          onApplyPreset={onApplyPreset}
           onChange={(nextDimensions, changeMeta) => {
             let normalizedDimensions = nextDimensions;
             if (changeMeta?.kind === 'background' && nextDimensions.backgroundType === 'transparent' && activeResize.outputType === 'image/jpeg') {
@@ -198,6 +202,8 @@ const ImageUploader = forwardRef(function ImageUploader(_, ref) {
             }
             setResize({ ...normalizedDimensions, sourceUrl: image.url })
           }}
+          onPresetDeleted={onPresetDeleted}
+          selectedPresetId={selectedPresetId}
         />
       )}
 
@@ -210,9 +216,9 @@ const ImageUploader = forwardRef(function ImageUploader(_, ref) {
           <span className="quality-value">{quality}%</span>
         </div>
         <div className="quality-control">
-          <div className="quality-control__labels"><span>Quality</span><span>Smaller file</span><span>Better quality</span></div>
-          <input aria-label="Compression quality" className="quality-control__slider" type="range" min="0" max="100" value={quality} onChange={(event) => setQuality(Number(event.target.value))} />
-          <p className="quality-control__note">PNG keeps its original lossless format; quality affects JPEG and WebP output.</p>
+          <div className="quality-control__labels"><span>{isPngOutput ? 'Optimization Effort' : 'Quality'}</span><span>Smaller file</span><span>{isPngOutput ? 'More effort' : 'Better quality'}</span></div>
+          <input aria-label={isPngOutput ? 'PNG optimization effort' : 'Compression quality'} className="quality-control__slider" type="range" min="0" max="100" value={quality} onChange={(event) => setQuality(Number(event.target.value))} />
+          <p className="quality-control__note">{isPngOutput ? 'PNG uses lossless optimization. Higher effort may take longer.' : 'Quality affects JPEG and WebP output.'}</p>
         </div>
       </div>
     </section>

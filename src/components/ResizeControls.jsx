@@ -1,5 +1,7 @@
-import { Lock, LockKeyholeOpen, Maximize2 } from 'lucide-react';
+import { FolderOpen, Lock, LockKeyholeOpen, Maximize2 } from 'lucide-react';
+import { useState } from 'react';
 import { MAX_CANVAS_DIMENSION } from '../services/imageService';
+import PresetLibrary from './PresetLibrary';
 import './ResizeControls.css';
 
 const PRESETS = [
@@ -23,7 +25,8 @@ const OUTPUT_FORMATS = [
   ['image/jpeg', 'JPEG'],
 ];
 
-function ResizeControls({ dimensions, formatNotice, onChange }) {
+function ResizeControls({ dimensions, formatNotice, onApplyPreset, onChange, onPresetDeleted, selectedPresetId }) {
+  const [isPresetLibraryOpen, setIsPresetLibraryOpen] = useState(false);
   const setMode = (mode) => {
     const next = { ...dimensions, mode, locked: mode === 'original' ? true : dimensions.locked };
     if (mode === 'original' && dimensions.originalWidth && dimensions.originalHeight) {
@@ -55,11 +58,13 @@ function ResizeControls({ dimensions, formatNotice, onChange }) {
   };
 
   return (
-    <div className="resize-controls">
+    <>
+      <div className="resize-controls">
       <div className="resize-controls__heading">
         <div className="resize-controls__title">
           <span className="controls-card__icon" aria-hidden="true"><Maximize2 size={18} /></span>
           <div><p className="section-label">Resize</p><h2>Image dimensions</h2></div>
+          <button className="resize-controls__presets-button" type="button" onClick={() => setIsPresetLibraryOpen(true)}><FolderOpen size={15} /> Presets</button>
         </div>
         <span className="resize-controls__original">Original: {dimensions.originalWidth} × {dimensions.originalHeight}px</span>
       </div>
@@ -140,7 +145,15 @@ function ResizeControls({ dimensions, formatNotice, onChange }) {
           ))}
         </div>
       </div>
-    </div>
+      </div>
+      <PresetLibrary
+        isOpen={isPresetLibraryOpen}
+        onApplyPreset={(preset) => { onApplyPreset?.(preset); setIsPresetLibraryOpen(false); }}
+        onClose={() => setIsPresetLibraryOpen(false)}
+        onPresetDeleted={onPresetDeleted}
+        selectedPresetId={selectedPresetId}
+      />
+    </>
   );
 }
 

@@ -26,7 +26,7 @@ function createStablePresetId() {
   return `custom-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-function PresetLibrary({ onApplyPreset, onPresetDeleted, selectedPresetId }) {
+function PresetLibrary({ isOpen, onApplyPreset, onClose, onPresetDeleted, selectedPresetId }) {
   const [activeFilter, setActiveFilter] = useState(ALL_FILTER);
   const [query, setQuery] = useState('');
   const [customPresets, setCustomPresets] = useState(() => getCustomPresets());
@@ -193,8 +193,11 @@ function PresetLibrary({ onApplyPreset, onPresetDeleted, selectedPresetId }) {
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <section className="preset-library" aria-labelledby="preset-library-title">
+    <section className="preset-library" aria-labelledby="preset-library-title" aria-modal="true" role="dialog">
+      <div className="preset-library__dialog">
       <div className="preset-library__intro">
         <div>
           <p className="eyebrow">Preset library</p>
@@ -206,6 +209,7 @@ function PresetLibrary({ onApplyPreset, onPresetDeleted, selectedPresetId }) {
           <button className="preset-library__create-button" type="button" onClick={startCreating}>
             <Plus size={16} /> Create Custom Preset
           </button>
+          <button className="custom-preset-form__close" type="button" aria-label="Close preset library" onClick={onClose}><X size={18} /></button>
         </div>
       </div>
 
@@ -225,8 +229,10 @@ function PresetLibrary({ onApplyPreset, onPresetDeleted, selectedPresetId }) {
       <div className="preset-library__body">
         <aside className="preset-library__sidebar" aria-label="Preset categories">
           <span className="preset-library__sidebar-label">Categories</span>
-          <PresetCategory active={activeFilter === ALL_FILTER} category={{ id: ALL_FILTER, name: 'All Presets' }} count={allPresets.length} onSelect={setActiveFilter} />
-          {PRESET_CATEGORIES.map((category) => <PresetCategory key={category.id} active={activeFilter === category.id} category={category} count={categoryCounts[category.id] || 0} onSelect={setActiveFilter} />)}
+          <div className="preset-library__category-list">
+            <PresetCategory active={activeFilter === ALL_FILTER} category={{ id: ALL_FILTER, name: 'All Presets' }} count={allPresets.length} onSelect={setActiveFilter} />
+            {PRESET_CATEGORIES.map((category) => <PresetCategory key={category.id} active={activeFilter === category.id} category={category} count={categoryCounts[category.id] || 0} onSelect={setActiveFilter} />)}
+          </div>
         </aside>
 
         <div className="preset-library__results" aria-live="polite">
@@ -261,7 +267,7 @@ function PresetLibrary({ onApplyPreset, onPresetDeleted, selectedPresetId }) {
           {formFeedback && <p className="custom-preset-form__success" role="status"><CheckCircle2 size={16} /> {formFeedback}</p>}
           {visiblePresets.length > 0 ? (
             <div className="preset-library__grid">
-              {visiblePresets.map((preset) => <PresetCard key={preset.id} favorite={favoriteIds.includes(preset.id)} onApply={onApplyPreset} onDelete={removeCustomPreset} onEdit={startEditing} onFavoriteToggle={toggleFavorite} onVisit={visitPreset} preset={preset} selected={selectedPresetId === preset.id} />)}
+              {visiblePresets.map((preset) => <PresetCard key={preset.id} favorite={favoriteIds.includes(preset.id)} onApply={(presetToApply) => { onApplyPreset?.(presetToApply); onClose?.(); }} onDelete={removeCustomPreset} onEdit={startEditing} onFavoriteToggle={toggleFavorite} onVisit={visitPreset} preset={preset} selected={selectedPresetId === preset.id} />)}
             </div>
           ) : (
             <div className="preset-library__empty">
@@ -272,6 +278,7 @@ function PresetLibrary({ onApplyPreset, onPresetDeleted, selectedPresetId }) {
             </div>
           )}
         </div>
+      </div>
       </div>
     </section>
   );

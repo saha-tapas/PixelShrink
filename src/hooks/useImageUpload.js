@@ -79,8 +79,10 @@ function useImageUpload() {
       }
       releaseObjectUrl();
       objectUrlRef.current = objectUrl;
+      if (detectedType === 'image/png') console.debug('PNG upload accepted:', { type: detectedType, size: file.size });
       setImage({
         originalSize: file.size,
+         file,
         name: file.name,
         size: formatFileSize(file.size),
         type: detectedType,

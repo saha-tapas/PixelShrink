@@ -1,7 +1,24 @@
 .preset-library {
-  width: min(100%, var(--content-width-xl));
-  margin: 0 auto;
-  padding: 0 var(--content-gutter) var(--space-20);
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--space-8);
+  background: rgb(15 23 42 / 45%);
+}
+
+.preset-library__dialog {
+  width: min(100%, 72rem);
+  height: min(52rem, calc(100vh - (var(--space-8) * 2)));
+  max-height: calc(100vh - (var(--space-8) * 2));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-background);
+  box-shadow: var(--shadow-lg);
 }
 
 .preset-library__intro,
@@ -43,6 +60,12 @@
   gap: var(--space-6);
   padding-top: var(--space-8);
   border-top: 1px solid var(--color-border);
+}
+
+.preset-library__dialog .preset-library__intro {
+  flex-shrink: 0;
+  padding: var(--space-4) var(--space-6);
+  border-top: 0;
 }
 
 .preset-library__intro h2 {
@@ -139,11 +162,40 @@
   overflow: hidden;
 }
 
+.preset-library__dialog .preset-library__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  margin-top: 0;
+  padding: 0 var(--space-6) var(--space-6);
+  overflow: hidden;
+}
+
+.preset-library__dialog .preset-library__toolbar {
+  flex-shrink: 0;
+  margin-top: 0;
+  padding: 0 var(--space-6) var(--space-4);
+}
+
+.preset-library__dialog .preset-library__results {
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+  scrollbar-color: var(--color-blue-200) transparent;
+  scrollbar-width: thin;
+}
+
 .preset-library__sidebar {
   position: sticky;
   top: var(--space-3);
   display: grid;
   flex: 0 0 13rem;
+  gap: var(--space-1);
+}
+
+.preset-library__category-list {
+  display: grid;
   gap: var(--space-1);
 }
 
@@ -189,6 +241,7 @@
 .preset-library__results {
   flex: 1;
   min-width: 0;
+  min-height: 0;
   max-height: 42rem;
   padding-right: var(--space-2);
   overflow-y: auto;
@@ -504,6 +557,60 @@
 }
 
 @media (max-width: 48rem) {
+  .preset-library {
+    padding: var(--space-3);
+  }
+
+  .preset-library__dialog {
+    height: calc(100vh - (var(--space-3) * 2));
+    max-height: calc(100vh - (var(--space-3) * 2));
+  }
+
+  .preset-library__dialog .preset-library__intro {
+    position: relative;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .preset-library__dialog .preset-library__intro > div:first-child {
+    padding-right: var(--space-8);
+  }
+
+  .preset-library__dialog .preset-library__intro-actions {
+    align-items: stretch;
+    gap: var(--space-3);
+    width: 100%;
+  }
+
+  .preset-library__dialog .preset-library__create-button {
+    width: 100%;
+  }
+
+  .preset-library__dialog .preset-library__intro-actions .custom-preset-form__close {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+  }
+
+  .preset-library__dialog .preset-library__toolbar {
+    padding: 0 var(--space-4) var(--space-3);
+  }
+
+  .preset-library__dialog .preset-library__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    gap: var(--space-3);
+    padding: 0 var(--space-4) var(--space-4);
+    overflow-y: auto;
+  }
+
+  .preset-library__dialog .preset-library__results-heading {
+    margin-bottom: var(--space-2);
+  }
+
   .preset-library__toolbar,
   .preset-library__body {
     flex-direction: column;
@@ -530,22 +637,47 @@
 
   .preset-library__sidebar {
     position: static;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
+    display: block;
+    flex: 0 0 auto;
+    width: 100%;
   }
 
   .preset-library__sidebar-label {
-    flex-basis: 100%;
+    display: block;
+    margin-bottom: var(--space-2);
   }
 
-  .preset-library__category {
-    flex: 1 1 auto;
+  .preset-library__category-list {
+    display: flex;
+    gap: var(--space-2);
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+    scrollbar-color: var(--color-blue-200) transparent;
+    scrollbar-width: thin;
+  }
+
+  .preset-library__category-list .preset-library__category {
+    flex: 0 0 auto;
+    min-width: max-content;
+    min-height: 2.5rem;
+    white-space: nowrap;
+  }
+
+  .preset-library__category-list .preset-library__category span {
+    flex: 0 0 auto;
   }
 
   .preset-library__results {
+    min-height: auto;
     max-height: none;
     padding-right: 0;
+    overflow: visible;
+  }
+
+  .preset-library__dialog .preset-library__results {
+    height: auto;
+    flex: 0 0 auto;
     overflow: visible;
   }
 }
